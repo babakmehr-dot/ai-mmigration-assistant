@@ -1,16 +1,5 @@
-<<<<<<< HEAD
-git add app.py
-git commit -m "FINAL FIX: Force Streamlit to use new dependencies"
-git push origin main
-
-این Commit جدید باید Streamlit را مجبور کند که یک Build کامل انجام دهد و مشکل `tools` را که به خاطر Cache قدیمی بود، برطرف کند. **موفق باشید!**
-
-
-
-=======
 # FINAL FIX: Force Streamlit to rebuild cache (2025-11-28)
 # import required libraries
->>>>>>> 0b7a4b8a6bcc02b576d760205264df7118a48bc0
 import streamlit as st
 import os
 from google import genai
@@ -130,7 +119,7 @@ st.caption("Specialized in Canadian Immigration, powered by Gemini.")
 # Initialize chat history in session state
 if "messages" not in st.session_state:
     st.session_state["messages"] = [
-        {"role": "assistant", "content": "سلام! من رایان هستم، مشاور هوش مصنوعی مهاجرت کانادا. چطور می‌توانم امروز به شما کمک کنم؟"}
+        {"role": "assistant", "content": "Hello! I am Rayan, your AI Canadian Immigration Consultant. How can I help you today?"}
     ]
 
 # Display chat messages from history on app rerun
@@ -168,14 +157,14 @@ def handle_tool_call(tool_call):
     return response.text # Return the final text response from the model
 
 # Process user input
-if prompt := st.chat_input("سؤال خود را در مورد مهاجرت کانادا بپرسید..."):
+if prompt := st.chat_input("Ask your question about Canadian immigration..."):
     # Add user message to chat history
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
         st.markdown(prompt)
 
     with st.chat_message("assistant"):
-        with st.spinner("در حال تحلیل..."):
+        with st.spinner("Analyzing..."):
             # Send message to the Gemini API
             try:
                 response = chat.send_message(prompt)
@@ -202,4 +191,4 @@ if prompt := st.chat_input("سؤال خود را در مورد مهاجرت کا
             except Exception as e:
                 error_message = f"An error occurred: {e}. Please check your API key and connection."
                 st.error(error_message)
-                st.session_state.messages.append({"role": "assistant", "content": error_message})        
+                st.session_state.messages.append({"role": "assistant", "content": error_message})

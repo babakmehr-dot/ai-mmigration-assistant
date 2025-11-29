@@ -1,3 +1,11 @@
+git add app.py
+git commit -m "FINAL FIX: Force Streamlit to use new dependencies"
+git push origin main
+
+این Commit جدید باید Streamlit را مجبور کند که یک Build کامل انجام دهد و مشکل `tools` را که به خاطر Cache قدیمی بود، برطرف کند. **موفق باشید!**
+
+
+
 import streamlit as st
 import os
 import json

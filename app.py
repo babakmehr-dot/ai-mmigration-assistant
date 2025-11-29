@@ -67,7 +67,8 @@ def calculate_crs_score(age: int, education_level: str, work_experience_years: i
 try:
     if "GEMINI_API_KEY" not in os.environ:
         # Check Streamlit secrets first
-        api_key = st.secrets["GEMINI_API_KEY"]
+        # این خط در صورت عدم وجود کلید در secrets.toml خطا ایجاد نمی کند
+        api_key = st.secrets.get("GEMINI_API_KEY") 
     else:
         api_key = os.environ["GEMINI_API_KEY"]
 except KeyError:
@@ -75,6 +76,11 @@ except KeyError:
     st.stop()
 except Exception as e:
     st.error(f"An unexpected error occurred during API key retrieval: {e}")
+    st.stop()
+    
+# اگر کلید API هنوز پیدا نشده است، برنامه را متوقف می کنیم
+if not api_key:
+    st.error("API key not found. Please set the 'GEMINI_API_KEY' environment variable in your Streamlit Secrets.")
     st.stop()
 
 
@@ -193,6 +199,7 @@ if prompt := st.chat_input("Ask your question about Canadian immigration..."):
                     st.session_state.messages.append({"role": "assistant", "content": response.text})
 
             except Exception as e:
+                # این پیام خطای 400 API KEY INVALID را شامل می شود
                 error_message = f"An error occurred: {e}. Please check your API key and connection."
                 st.error(error_message)
-                st.session_state.messag    
+                st.session_state.messages.append({"role": "assistant", "content": error_message})

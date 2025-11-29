@@ -1,4 +1,3 @@
-# FINAL FIX: Force Streamlit to rebuild cache (2025-11-28)
 # import required libraries
 import streamlit as st
 import os
@@ -96,12 +95,16 @@ available_tools = [analyze_document, calculate_crs_score]
 def create_chat_session():
     """Creates a new chat session with the specified model, instructions, and tools."""
     try:
-        # IMPORTANT: Using types.Tool as suggested by google-genai documentation for tool calling
-        # The 'tools' argument is available from google-genai==1.52.0 onwards
+        # FIX: Pass system_instruction and tools using the config object
+        config = types.GenerateContentConfig(
+            system_instruction=SYSTEM_INSTRUCTION,
+            tools=available_tools
+        )
+
+        # IMPORTANT: Pass the config object to the client.chats.create
         chat = client.chats.create(
             model="gemini-2.5-flash",
-            system_instruction=SYSTEM_INSTRUCTION,
-            tools=available_tools # Pass the function objects here
+            config=config # Pass the configuration here
         )
         return chat
     except Exception as e:
@@ -167,6 +170,7 @@ if prompt := st.chat_input("Ask your question about Canadian immigration..."):
         with st.spinner("Analyzing..."):
             # Send message to the Gemini API
             try:
+                # The chat session already has the system instructions and tools via the config object
                 response = chat.send_message(prompt)
                 
                 # Check for tool calls
@@ -191,4 +195,4 @@ if prompt := st.chat_input("Ask your question about Canadian immigration..."):
             except Exception as e:
                 error_message = f"An error occurred: {e}. Please check your API key and connection."
                 st.error(error_message)
-                st.session_state.messages.append({"role": "assistant", "content": error_message})
+                st.session_state.messag    
